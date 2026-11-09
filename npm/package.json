@@ -1,6 +1,6 @@
 {
   "name": "@jumperly/helper",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local helper of the Jumperly ESP32 simulator: lets simulated boards into your local network, shows them the Wi-Fi networks around and, on Windows, Bluetooth LE devices.",
   "license": "MIT",
   "homepage": "https://jumperly.dev",
