@@ -1,5 +1,14 @@
 # @jumperly/net-gateway
 
+[![npm](https://img.shields.io/npm/v/@jumperly/helper?label=%40jumperly%2Fhelper)](https://www.npmjs.com/package/@jumperly/helper)
+[![license](https://img.shields.io/github/license/jumperly/net-gateway)](LICENSE)
+
+The local helper is published on npm as [`@jumperly/helper`](https://www.npmjs.com/package/@jumperly/helper):
+
+```sh
+npx @jumperly/helper
+```
+
 The network gateway of [Jumperly](https://jumperly.dev): it lets a sketch running on an ESP32-S3 in
 the browser simulator reach the internet. The browser (the `NetHub` of the web app) keeps one
 WebSocket, `/net/v1`, and multiplexes the guest's socket operations over it: `open` / data /
