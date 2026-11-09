@@ -1,5 +1,5 @@
-import { GatewayStatsSchema } from '@jumperly/schema';
 import { afterEach, describe, expect, it } from 'vitest';
+import { GatewayStatsSchema } from '../src/protocol';
 import type { Session } from '../src/session';
 import { type Gateway, startGateway } from './helpers';
 

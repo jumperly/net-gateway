@@ -4,19 +4,19 @@
 // reach the LAN (the subnets of this machine's interfaces), resolve `*.local` / `*.lan` names with
 // the OS, and forward ports of this machine to simulated boards.
 //
-//   npx @jumperly/helper                                    the published package (npm/)
-//   pnpm --filter @jumperly/net-gateway helper              start (prints the pairing code)
-//   pnpm --filter @jumperly/net-gateway helper --new-code   start with a new code
-//   pnpm --filter @jumperly/net-gateway build:helper        one executable for this OS (dist/)
-//   pnpm --filter @jumperly/net-gateway build:npm           the npm package (npm/dist/)
+//   npx @jumperly/helper          the published package (npm/)
+//   pnpm helper                   start (prints the pairing code)
+//   pnpm helper --new-code        start with a new code
+//   pnpm build:helper             one executable for this OS (dist/)
+//   pnpm build:npm                the npm package (npm/dist/)
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { NET_PATH } from '@jumperly/schema';
 import { TokenAuthorizer } from './auth';
 import { BleService } from './ble/service';
 import { windowsSidecar } from './ble/sidecar';
 import { loadConfig } from './config';
 import { formatPairingCode, loadPairing } from './pairing';
+import { NET_PATH } from './protocol';
 import { buildServer } from './server';
 
 /** Set by the npm build (scripts/build-npm.mjs); absent when run from the sources. */

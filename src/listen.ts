@@ -1,6 +1,6 @@
 import { type Server, type Socket, createServer } from 'node:net';
-import type { NetGatewayMsg, NetRefuseCode } from '@jumperly/schema';
 import { hostPort } from './flow';
+import type { NetGatewayMsg, NetRefuseCode } from './protocol';
 
 /** What a forward needs from its session. */
 export interface ListenSession {

@@ -1,7 +1,6 @@
 import { timingSafeEqual } from 'node:crypto';
 import { networkInterfaces } from 'node:os';
 import websocket from '@fastify/websocket';
-import { NET_FRAME_MAX, NET_PATH, NET_SUBPROTOCOL } from '@jumperly/schema';
 import Fastify, { type FastifyInstance, type FastifyServerOptions } from 'fastify';
 import { Aliases } from './aliases';
 import { AnonymousAuthorizer, type Authorizer, TokenAuthorizer } from './auth';
@@ -10,6 +9,7 @@ import type { GatewayConfig } from './config';
 import { DnsResolver, lookupBackend } from './dns';
 import type { MqttHandler } from './mqtt/handler';
 import { type FlowPolicy, LanPolicy, Policy, interfaceCidrs } from './policy';
+import { NET_FRAME_MAX, NET_PATH, NET_SUBPROTOCOL } from './protocol';
 import { Session } from './session';
 import { WifiScanner } from './wifi-scan';
 

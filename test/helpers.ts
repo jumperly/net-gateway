@@ -1,4 +1,10 @@
 import { type AddressInfo, type Server, type Socket, createServer } from 'node:net';
+import type { FastifyInstance } from 'fastify';
+import WebSocket from 'ws';
+import type { BleService } from '../src/ble/service';
+import { type ConfigOverrides, resolveConfig } from '../src/config';
+import type { DnsResolver } from '../src/dns';
+import type { MqttHandler } from '../src/mqtt/handler';
 import {
   NET_PATH,
   NET_SUBPROTOCOL,
@@ -7,13 +13,7 @@ import {
   decodeDataFrame,
   encodeDataFrame,
   parseGatewayMsg,
-} from '@jumperly/schema';
-import type { FastifyInstance } from 'fastify';
-import WebSocket from 'ws';
-import type { BleService } from '../src/ble/service';
-import { type ConfigOverrides, resolveConfig } from '../src/config';
-import type { DnsResolver } from '../src/dns';
-import type { MqttHandler } from '../src/mqtt/handler';
+} from '../src/protocol';
 import { buildServer } from '../src/server';
 import type { WifiScanner } from '../src/wifi-scan';
 

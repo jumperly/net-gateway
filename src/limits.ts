@@ -1,5 +1,5 @@
-import type { NetRefuseCode } from '@jumperly/schema';
-import { NET_FRAME_MAX } from '@jumperly/schema';
+import type { NetRefuseCode } from './protocol';
+import { NET_FRAME_MAX } from './protocol';
 
 /** A token bucket: `rate` tokens per second up to `capacity`; starts full. */
 export class TokenBucket {

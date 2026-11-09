@@ -1,6 +1,6 @@
-import { NET_TEXT_MAX, type NetClientMsg, type NetGatewayMsg } from '@jumperly/schema';
 import type { AedesPublishPacket } from 'aedes';
 import { TokenBucket } from '../limits';
+import { NET_TEXT_MAX, type NetClientMsg, type NetGatewayMsg } from '../protocol';
 import type { Broker } from './brokers';
 
 /** `mqtt.message` carries at most this many payload bytes (before base64), else `truncated`. */

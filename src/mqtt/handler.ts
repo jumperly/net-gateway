@@ -1,6 +1,6 @@
 import type { Duplex } from 'node:stream';
-import { MQTT_HOST, type NetClientMsg, type NetGatewayMsg } from '@jumperly/schema';
 import type { FastifyBaseLogger } from 'fastify';
+import { MQTT_HOST, type NetClientMsg, type NetGatewayMsg } from '../protocol';
 import type { BrokerRegistry } from './brokers';
 import { MqttMonitor } from './monitor';
 import { duplexPair } from './pair';

@@ -1,16 +1,5 @@
 import { randomUUID } from 'node:crypto';
 import type { Socket } from 'node:net';
-import {
-  NET_WINDOW,
-  type NetCap,
-  type NetClientMsg,
-  type NetGatewayMsg,
-  type NetLimits,
-  type NetRefuseCode,
-  decodeDataFrame,
-  encodeDataFrame,
-  parseClientMsg,
-} from '@jumperly/schema';
 import type { FastifyBaseLogger } from 'fastify';
 import type WebSocket from 'ws';
 import type { Aliases } from './aliases';
@@ -23,6 +12,17 @@ import { SessionLimits } from './limits';
 import { type ListenSession, Listener } from './listen';
 import type { MqttHandler, MqttSession } from './mqtt/handler';
 import type { FlowPolicy } from './policy';
+import {
+  NET_WINDOW,
+  type NetCap,
+  type NetClientMsg,
+  type NetGatewayMsg,
+  type NetLimits,
+  type NetRefuseCode,
+  decodeDataFrame,
+  encodeDataFrame,
+  parseClientMsg,
+} from './protocol';
 import { StreamFlow, dialTcp } from './tcp';
 import { DatagramFlow } from './udp';
 import type { WifiScanner } from './wifi-scan';

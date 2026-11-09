@@ -1,6 +1,6 @@
 import { BlockList, isIPv4, isIPv6 } from 'node:net';
-import type { NetProto, NetRefuseCode } from '@jumperly/schema';
 import type { Alias, Aliases } from './aliases';
+import type { NetProto, NetRefuseCode } from './protocol';
 
 /**
  * The SSRF policy of `open`. The host must be a canonical IP literal (the server never resolves a

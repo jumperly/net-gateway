@@ -1,10 +1,10 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { createSocket } from 'node:dgram';
-import { NET_FRAME_MAX, NET_SUBPROTOCOL, NET_WINDOW } from '@jumperly/schema';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Aliases } from '../src/aliases';
 import type { ConfigOverrides } from '../src/config';
 import { DnsResolver } from '../src/dns';
+import { NET_FRAME_MAX, NET_SUBPROTOCOL, NET_WINDOW } from '../src/protocol';
 import { Client, type Gateway, type TcpServer, sleep, startGateway, tcpServer } from './helpers';
 
 const ECHO = 'echo.jumperly.internal';

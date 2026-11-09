@@ -1,7 +1,7 @@
 import { Resolver, lookup as dnsLookup } from 'node:dns/promises';
 import { isIP } from 'node:net';
-import { NET_DOMAIN } from '@jumperly/schema';
 import { type Aliases, aliasKey } from './aliases';
+import { NET_DOMAIN } from './protocol';
 
 export interface DnsRecord {
   address: string;

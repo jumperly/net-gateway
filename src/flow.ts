@@ -1,5 +1,5 @@
-import type { NetGatewayMsg, NetProto, NetRefuseCode } from '@jumperly/schema';
 import type { SessionLimits } from './limits';
+import type { NetGatewayMsg, NetProto, NetRefuseCode } from './protocol';
 
 /** What a flow needs from its session. */
 export interface FlowSession {

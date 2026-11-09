@@ -1,4 +1,4 @@
-import { NET_DOMAIN } from '@jumperly/schema';
+import { NET_DOMAIN } from './protocol';
 
 /**
  * Where a gateway alias leads. Aliases come from trusted configuration and bypass the policy (a

@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
-import type { GattServiceDesc } from '@jumperly/schema';
+import type { GattServiceDesc } from '../protocol';
 import { buildSidecar } from './build';
 
 /** The helper → sidecar commands (one JSON object per line). Bytes are lower-case hex. */

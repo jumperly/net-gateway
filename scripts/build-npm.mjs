@@ -1,7 +1,7 @@
 // The npm package @jumperly/helper (npm/): the local helper bundled into one CommonJS file with a
 // shebang, so `npx @jumperly/helper` runs it with the user's `node` and installs nothing else.
 //
-//   pnpm --filter @jumperly/net-gateway build:npm
+//   pnpm build:npm
 //   → npm/dist/jumperly-helper.cjs, npm/dist/THIRD-PARTY-NOTICES.txt, npm/LICENSE
 //   cd npm && npm pack        (or npm publish --access public)
 //

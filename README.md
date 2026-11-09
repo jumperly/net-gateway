@@ -20,32 +20,33 @@ The same server also runs as the **local helper** on the user's computer: it let
 into the real local network (a printer, Home Assistant, another ESP32), shows them the Wi-Fi
 networks around, and on Windows bridges Bluetooth LE.
 
-The wire protocol (message types and codec) lives in `@jumperly/schema` (`net-protocol.ts`).
+The wire protocol (message types and codec) is in `src/protocol/`: a copy of the Jumperly app's
+schema, kept in sync from there. Change the protocol there, not here.
 
 Endpoints: `GET /net/v1` (WebSocket, subprotocol `jumperly-net.1`), `GET /api/net/health` →
 `{"ok":true}`.
 
 ## Running locally
 
-The package is part of the Jumperly monorepo (it depends on `@jumperly/schema`, the wire protocol) and is run with
-`pnpm` from the monorepo root:
+Node.js 22+ and pnpm 9:
 
 ```sh
-pnpm --filter @jumperly/net-gateway dev     # tsx watch, 127.0.0.1:3002
-pnpm --filter @jumperly/net-gateway start   # no watch
+pnpm install
+pnpm dev     # tsx watch, 127.0.0.1:3002
+pnpm start   # no watch
 curl 127.0.0.1:3002/api/net/health
 ```
 
 Tests and checks:
 
 ```sh
-pnpm --filter @jumperly/net-gateway test
-pnpm --filter @jumperly/net-gateway typecheck
-npx biome check apps/net-gateway
+pnpm test
+pnpm typecheck
 ```
 
 The tests never reach the internet: echo servers on `127.0.0.1` are reached through aliases
-(`echo.jumperly.internal`) and DNS is stubbed.
+(`echo.jumperly.internal`) and DNS is stubbed. End-to-end tests with simulated firmware live in the
+Jumperly app's repository.
 
 ## Local helper
 
@@ -54,9 +55,9 @@ network, find devices by `*.local` names, and LAN devices reach a server on a bo
 forward on this computer.
 
 ```sh
-pnpm --filter @jumperly/net-gateway helper              # 127.0.0.1:3003, prints the pairing code
-pnpm --filter @jumperly/net-gateway helper --new-code   # a new code (the tab has to pair again)
-pnpm --filter @jumperly/net-gateway build:helper        # one executable for this OS
+pnpm helper              # 127.0.0.1:3003, prints the pairing code
+pnpm helper --new-code   # a new code (the tab has to pair again)
+pnpm build:helper        # one executable for this OS
 ```
 
 The code is entered in the simulator's **Network** tab → **Local network**; port forwards
@@ -92,9 +93,13 @@ so each OS is built on itself (or in CI). It is not signed (ad-hoc on macOS);
 
 **npm package.** Users run the helper as [`@jumperly/helper`](npm/README.md): `npx @jumperly/helper`
 (Node.js 22+). `build:npm` bundles it into `npm/dist/jumperly-helper.cjs` (esbuild, CommonJS, a
-shebang, no runtime dependencies) with `npm/dist/THIRD-PARTY-NOTICES.txt`; then `npm pack` or
-`npm publish --access public` in `npm/`. The version is the one in `npm/package.json`
-(`jumperly-helper --version` prints it).
+shebang, no runtime dependencies) with `npm/dist/THIRD-PARTY-NOTICES.txt`. The version is the one
+in `npm/package.json` (`jumperly-helper --version` prints it).
+
+**Releases.** Raising the version in `npm/package.json` on `main` releases it
+(`.github/workflows/release.yml`): the tests run, the executables are built on Windows, macOS and
+Linux, the package goes to npm (trusted publishing, with provenance) and a GitHub release `vX.Y.Z`
+gets the bundle, the executables and the notices. Other commits release nothing.
 
 | Variable | Default | Meaning |
 |----------|---------|---------|

@@ -1,7 +1,7 @@
 import { type Socket, createSocket } from 'node:dgram';
-import { NET_FRAME_MAX, type NetRefuseCode } from '@jumperly/schema';
 import type { Flow, FlowInfo, FlowLine, FlowSession } from './flow';
 import { hostPort } from './flow';
+import { NET_FRAME_MAX, type NetRefuseCode } from './protocol';
 import { connectErrorCode } from './tcp';
 
 /**

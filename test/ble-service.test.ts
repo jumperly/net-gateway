@@ -1,9 +1,3 @@
-import {
-  BLE_DEVICES_PER_FRAME,
-  NET_TEXT_MAX,
-  type NetGatewayMsg,
-  parseGatewayMsg,
-} from '@jumperly/schema';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   BLE_CONNECT_MS,
@@ -13,6 +7,12 @@ import {
   nameOfAd,
 } from '../src/ble/service';
 import type { SidecarHandlers, SidecarIn, SidecarOut } from '../src/ble/sidecar';
+import {
+  BLE_DEVICES_PER_FRAME,
+  NET_TEXT_MAX,
+  type NetGatewayMsg,
+  parseGatewayMsg,
+} from '../src/protocol';
 
 /** A sidecar in the test's hands: what the service sent it, and events to emit. */
 function fakeSidecar() {

@@ -1,6 +1,6 @@
 import { createHash, timingSafeEqual } from 'node:crypto';
-import type { NetClientMsg, NetRefuseCode } from '@jumperly/schema';
 import { IpSessions } from './limits';
+import type { NetClientMsg, NetRefuseCode } from './protocol';
 
 export type HelloMsg = Extract<NetClientMsg, { t: 'hello' }>;
 

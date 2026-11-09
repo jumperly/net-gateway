@@ -1,11 +1,11 @@
 import { type AddressInfo, type Socket, connect } from 'node:net';
-import { MQTT_HOST, NET_WINDOW } from '@jumperly/schema';
 import mqtt, { type Packet } from 'mqtt-packet';
 import { afterEach, describe, expect, it } from 'vitest';
 import { BrokerRegistry } from '../src/mqtt/brokers';
 import { type DebugPort, startDebugPort } from '../src/mqtt/debug-port';
 import { BrokerMqttHandler } from '../src/mqtt/handler';
 import { MONITOR_PAYLOAD_MAX, MONITOR_RATE } from '../src/mqtt/monitor';
+import { MQTT_HOST, NET_WINDOW } from '../src/protocol';
 import { Client, type Gateway, sleep, startGateway } from './helpers';
 
 const NS_A = 'project-aaaa-0001';

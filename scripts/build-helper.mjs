@@ -2,7 +2,7 @@
 // application (SEA). The helper is bundled into one CommonJS file (esbuild), Node turns it into a
 // blob, and postject injects the blob into a copy of the running `node` binary.
 //
-//   pnpm --filter @jumperly/net-gateway build:helper
+//   pnpm build:helper
 //   → dist/jumperly-helper(.exe), dist/jumperly-helper.cjs (the bundle, runs with plain `node`)
 //
 // A SEA is built for the OS and CPU of the `node` that runs this script: build each one on its own

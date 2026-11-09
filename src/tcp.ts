@@ -1,7 +1,7 @@
 import { type Socket, connect } from 'node:net';
 import type { Duplex } from 'node:stream';
-import { NET_FRAME_MAX, NET_WINDOW, type NetRefuseCode } from '@jumperly/schema';
 import { type Flow, type FlowInfo, type FlowLine, type FlowSession, hostPort } from './flow';
+import { NET_FRAME_MAX, NET_WINDOW, type NetRefuseCode } from './protocol';
 
 /** A connection being made: the stream at once, whether it connected later. */
 export interface Dial {

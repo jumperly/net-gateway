@@ -1,0 +1,119 @@
+# A release of @jumperly/helper: when npm/package.json carries a version that has no tag vX.Y.Z
+# yet, the tests run, the helper is built as a single executable for Windows, macOS and Linux,
+# the npm package is published (trusted publishing, with provenance) and a GitHub release vX.Y.Z
+# gets the bundle, the executables and the notices. A version already on npm is not published
+# again, so a failed run can simply be re-run.
+name: release
+on:
+  push:
+    branches: [main]
+    paths: ['npm/package.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: release
+  cancel-in-progress: false
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      release: ${{ steps.v.outputs.release }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: v
+        run: |
+          version=$(node -p "require('./npm/package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --tags origin "refs/tags/v$version" > /dev/null; then
+            echo "v$version is released already"
+            echo "release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  test:
+    needs: version
+    if: needs.version.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v5
+        with: { version: 9.12.0 }
+      - uses: actions/setup-node@v5
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+
+  # A Node single executable is built for the OS and CPU of the node that builds it.
+  executable:
+    needs: [version, test]
+    strategy:
+      matrix:
+        include:
+          - { os: windows-latest, name: jumperly-helper-windows-x64.exe, file: jumperly-helper.exe }
+          - { os: macos-latest, name: jumperly-helper-macos-arm64, file: jumperly-helper }
+          - { os: ubuntu-latest, name: jumperly-helper-linux-x64, file: jumperly-helper }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v5
+        with: { version: 9.12.0 }
+      - uses: actions/setup-node@v5
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build:helper
+      - shell: bash
+        run: mkdir out && mv "dist/${{ matrix.file }}" "out/${{ matrix.name }}"
+      - uses: actions/upload-artifact@v5
+        with: { name: '${{ matrix.name }}', path: 'out/${{ matrix.name }}', if-no-files-found: error }
+
+  publish:
+    needs: [version, executable]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v5
+        with: { version: 9.12.0 }
+      - uses: actions/setup-node@v5
+        with: { node-version: 24, cache: pnpm, registry-url: 'https://registry.npmjs.org' }
+      # Trusted publishing needs npm 11.5.1 or newer.
+      - run: npm install -g npm@^11.5.1
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build:npm
+      - name: Publish to npm
+        working-directory: npm
+        run: |
+          if npm view "@jumperly/helper@$VERSION" version > /dev/null 2>&1; then
+            echo "@jumperly/helper@$VERSION is on npm already"
+          else
+            npm publish --access public
+          fi
+      - uses: actions/download-artifact@v5
+        with: { path: out, merge-multiple: true }
+      # The executables carry Node.js itself: its license goes with them.
+      - run: curl -fsSL "https://raw.githubusercontent.com/nodejs/node/$(node -v)/LICENSE" -o out/NODE-LICENSE.txt
+      - name: GitHub release
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          cp npm/dist/jumperly-helper.cjs npm/dist/THIRD-PARTY-NOTICES.txt out/
+          cat > notes.md <<EOF
+          Run it with Node.js 22 or newer:
+
+          \`\`\`sh
+          npx @jumperly/helper@$VERSION
+          \`\`\`
+
+          Or download the executable for your system below: no Node.js needed. They are unsigned, so
+          Windows SmartScreen and macOS Gatekeeper ask before the first start; on macOS and Linux
+          make the file executable first (\`chmod +x\`). They are built with Node.js $(node -v), see
+          NODE-LICENSE.txt; the bundled packages are listed in THIRD-PARTY-NOTICES.txt.
+          EOF
+          gh release create "v$VERSION" out/* --target "$GITHUB_SHA" --title "v$VERSION" --notes-file notes.md

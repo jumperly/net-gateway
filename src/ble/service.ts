@@ -7,7 +7,7 @@ import {
   type NetBleState,
   type NetGatewayMsg,
   bytesOfHex,
-} from '@jumperly/schema';
+} from '../protocol';
 import type { Sidecar, SidecarIn, SidecarOut, SpawnSidecar } from './sidecar';
 
 /** The most devices around the helper keeps (the weakest go). */
