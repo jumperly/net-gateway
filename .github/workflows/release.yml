@@ -1,8 +1,8 @@
 # A release of @jumperly/helper: when npm/package.json carries a version that has no tag vX.Y.Z
 # yet, the tests run, the helper is built as a single executable for Windows, macOS and Linux,
 # the npm package is published (trusted publishing, with provenance) and a GitHub release vX.Y.Z
-# gets the bundle, the executables and the notices. A version already on npm is not published
-# again, so a failed run can simply be re-run.
+# gets the bundle, the executables and the notices; a copy goes to GitHub Packages. A version
+# already published is not published again, so a failed run can simply be re-run.
 name: release
 on:
   push:
@@ -117,3 +117,38 @@ jobs:
           NODE-LICENSE.txt; the bundled packages are listed in THIRD-PARTY-NOTICES.txt.
           EOF
           gh release create "v$VERSION" out/* --target "$GITHUB_SHA" --title "v$VERSION" --notes-file notes.md
+
+  # The same package in GitHub Packages, so the repository page lists it under Packages. Users
+  # install from npmjs.com; this copy is built from the release tag. Runs after a release and also
+  # by hand (workflow_dispatch) for a version released before this job existed.
+  github-packages:
+    needs: [version, publish]
+    if: ${{ always() && needs.version.result == 'success' && (needs.version.outputs.release == 'false' || needs.publish.result == 'success') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+      NODE_AUTH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+        with: { ref: 'v${{ needs.version.outputs.version }}' }
+      - uses: pnpm/action-setup@v5
+        with: { version: 9.12.0 }
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@jumperly'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build:npm
+      - name: Publish to GitHub Packages
+        working-directory: npm
+        run: |
+          if npm view "@jumperly/helper@$VERSION" version > /dev/null 2>&1; then
+            echo "@jumperly/helper@$VERSION is on GitHub Packages already"
+          else
+            npm publish --provenance=false
+          fi

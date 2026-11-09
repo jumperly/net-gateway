@@ -99,7 +99,8 @@ in `npm/package.json` (`jumperly-helper --version` prints it).
 **Releases.** Raising the version in `npm/package.json` on `main` releases it
 (`.github/workflows/release.yml`): the tests run, the executables are built on Windows, macOS and
 Linux, the package goes to npm (trusted publishing, with provenance) and a GitHub release `vX.Y.Z`
-gets the bundle, the executables and the notices. Other commits release nothing.
+gets the bundle, the executables and the notices; a copy goes to GitHub Packages (it only links
+the package to this repository: install from npmjs.com). Other commits release nothing.
 
 | Variable | Default | Meaning |
 |----------|---------|---------|
