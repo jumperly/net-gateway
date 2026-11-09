@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.turbo/
+coverage/
+test-results/
+playwright-report/
+storybook-static/
+*.local
+.env
+
+# The npm package (scripts/build-npm.mjs copies it in)
+npm/LICENSE

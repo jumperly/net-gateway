@@ -1,0 +1,38 @@
+{
+  "name": "@jumperly/net-gateway",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jumperly/net-gateway.git"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts",
+    "helper": "tsx src/helper.ts",
+    "build:helper": "node scripts/build-helper.mjs",
+    "build:npm": "node scripts/build-npm.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fastify/websocket": "^11.3.3",
+    "@jumperly/schema": "workspace:*",
+    "aedes": "^1.2.0",
+    "fastify": "^5.12.5",
+    "mqtt-packet": "^9.0.2",
+    "tsx": "^4.23.15",
+    "ws": "^8.22.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "@types/ws": "^8.18.1",
+    "esbuild": "0.25.12",
+    "postject": "1.0.0-alpha.6",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}
