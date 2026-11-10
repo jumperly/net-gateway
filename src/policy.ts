@@ -281,8 +281,8 @@ export interface LanPolicyOptions {
 }
 
 /**
- * The local helper's policy: a flow goes only to the LAN — the subnets of the machine's
- * interfaces and configured ranges, never the machine itself unless allowed — on any port and
+ * The local helper's policy: a flow goes only to the LAN - the subnets of the machine's
+ * interfaces and configured ranges, never the machine itself unless allowed - on any port and
  * protocol. Public addresses are the server gateway's; names are resolved first, as on the server.
  */
 export class LanPolicy implements FlowPolicy {

@@ -109,7 +109,7 @@ export type NetClientMsg =
    * listens, `refused` if it cannot; `close { sid }` stops it.
    */
   | { t: 'listen'; sid: number; proto: NetProto; port: number }
-  /** The answer to `incoming`: `ok` — the board took it, the flow runs; otherwise it is closed. */
+  /** The answer to `incoming`: `ok` - the board took it, the flow runs; otherwise it is closed. */
   | { t: 'accept'; sid: number; ok: boolean }
   /** Reserved (real SSIDs as beacon-only access points). */
   | { t: 'wifi.scan' }

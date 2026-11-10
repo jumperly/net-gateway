@@ -394,7 +394,7 @@ export function loadConfig(
   const warnings: string[] = [];
   if (config.allowCidrs.length)
     warnings.push(
-      `!!! allowCidrs = ${config.allowCidrs.join(', ')}: the SSRF policy lets these ranges through. TEST ONLY — never in production. !!!`,
+      `!!! allowCidrs = ${config.allowCidrs.join(', ')}: the SSRF policy lets these ranges through. TEST ONLY - never in production. !!!`,
     );
   if (!/^(127\.|::1$|localhost$)/.test(config.host) && config.tokens.length === 0)
     warnings.push(

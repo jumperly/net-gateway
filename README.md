@@ -71,7 +71,7 @@ to the simulator's own network with their channel, signal and security; they can
 
 **Bluetooth LE (Windows).** On Windows the helper announces `ble.scan` and `ble.gatt` and listens to
 the devices around by itself: real addresses and their type, RSSI, raw advertising and scan response
-data (Chrome on Windows cannot do that). A board's sketch connects to them through the helper — to
+data (Chrome on Windows cannot do that). A board's sketch connects to them through the helper - to
 every service, with no browser chooser. For that the helper builds a sidecar, `jumperly-ble.exe` (C#,
 WinRT), in the background on start with the system .NET Framework 4 compiler (`csc.exe`, shipped
 with Windows 10 and 11) and keeps it in `~/.jumperly/ble/` (the name carries a hash of the source,
@@ -86,7 +86,7 @@ advertises them; the phone sees the computer under its own name. This needs an a
 peripheral role (`IsPeripheralRoleSupported`).
 
 **Executable.** `build:helper` bundles the helper into one file (esbuild, CommonJS) and turns it into
-a Node SEA: `dist/jumperly-helper.exe` (Windows) or `dist/jumperly-helper` (macOS, Linux), ~95 MB —
+a Node SEA: `dist/jumperly-helper.exe` (Windows) or `dist/jumperly-helper` (macOS, Linux), ~95 MB -
 `node` with the helper embedded. The file targets the OS and CPU of the `node` that runs the build,
 so each OS is built on itself (or in CI). It is not signed (ad-hoc on macOS);
 `dist/jumperly-helper.cjs` also runs with a plain `node`.
@@ -105,7 +105,7 @@ the package to this repository: install from npmjs.com). Other commits release n
 | Variable | Default | Meaning |
 |----------|---------|---------|
 | `NETGW_PORT` | `3003` | Helper port |
-| `NETGW_LAN_CIDRS` | — | LAN subnets on top of the subnets of the computer's interfaces |
+| `NETGW_LAN_CIDRS` | - | LAN subnets on top of the subnets of the computer's interfaces |
 | `NETGW_ALLOW_LOOPBACK` | `0` | Let boards reach services of the computer itself (`127.0.0.1`) |
 | `NETGW_LISTEN_HOST` | `0.0.0.0` | Where port forwards listen |
 | `NETGW_ORIGINS` | `https://app.jumperly.dev` and the dev addresses (`localhost` and `127.0.0.1` on ports 5173, 5174, 4173) | App pages allowed to connect |
@@ -113,8 +113,8 @@ the package to this repository: install from npmjs.com). Other commits release n
 | `NETGW_LOG_LEVEL` | `warn` | Log verbosity |
 
 Security: the helper listens on `127.0.0.1` only; without the pairing code or with a foreign `Origin`
-there is no session; boards reach only the subnets of the interfaces (not the internet — that is the
-server's job — and not the computer itself); port forwards use ports from 1024, at most 8 per
+there is no session; boards reach only the subnets of the interfaces (not the internet - that is the
+server's job - and not the computer itself); port forwards use ports from 1024, at most 8 per
 session, and are removed when the session ends.
 
 ## Security
@@ -134,36 +134,36 @@ session, and are removed when the session ends.
 - **Ports** are allow-listed (`policy.port`); UDP is off while `udpPorts` is empty (`policy.proto`).
 - **Aliases** (trusted configuration) bypass the policy and the port allow-list.
 - **Origin.** An upgrade from an `Origin` not on the list → 403; a request without `Origin` (not a
-  browser) passes — tokens and binding to `127.0.0.1` protect against non-browser clients. No
+  browser) passes - tokens and binding to `127.0.0.1` protect against non-browser clients. No
   subprotocol → 400.
 - **Tokens.** With `NETGW_TOKENS` set, `hello.token` is required (otherwise `notice { code: 'auth' }`
   and close 1008). For your own authorization pass an `authorizer` (the `Authorizer` interface in
   `src/auth.ts`) to `buildServer`.
 - **Do not expose it publicly without tokens or an authorizer.** By default the gateway listens on
   `127.0.0.1`; bound to another address without `NETGW_TOKENS` it warns loudly in the log.
-- **Logs** (pino, stdout): a `session` / `session end` line per session and a `flow` line per flow —
+- **Logs** (pino, stdout): a `session` / `session end` line per session and a `flow` line per flow -
   board, `ip:port`, bytes both ways, duration, outcome and code; never the payload.
 
 ## Session behaviour
 
 | What | How |
 | --- | --- |
-| `hello` | within 5 s, otherwise 1008; a second `hello`, a message before `hello`, a broken frame, data beyond the granted window — 1008 |
+| `hello` | within 5 s, otherwise 1008; a second `hello`, a message before `hello`, a broken frame, data beyond the granted window - 1008 |
 | Sessions per IP | above the limit: `notice { code: 'limit.sessions' }` and close 1013 |
-| `welcome` | `gateway: 'server'`, `scope: 'public'`, `caps` (`tcp`, `dns`, `udp` when UDP ports are open, `mqtt` when the session gets a broker, see “MQTT”), `limits`, `aliases` (without the broker name), `mqtt` — only together with `caps: mqtt` |
+| `welcome` | `gateway: 'server'`, `scope: 'public'`, `caps` (`tcp`, `dns`, `udp` when UDP ports are open, `mqtt` when the session gets a broker, see "MQTT"), `limits`, `aliases` (without the broker name), `mqtt` - only together with `caps: mqtt` |
 | Gateway window | `opened.window` = 65536 (0 for UDP); `credit` is granted as data is written to the socket, within the outbound rate limit |
 | Client window | `open.window`; with zero credit the remote socket is paused |
 | WebSocket backpressure | with `bufferedAmount` > 1 MiB every flow of the session is paused until it drains |
-| Rate | `bytesPerSec` in each direction (token bucket, 1/8 s burst); client frames — `framesPerSec`, above that WebSocket reads are paused |
+| Rate | `bytesPerSec` in each direction (token bucket, 1/8 s burst); client frames - `framesPerSec`, above that WebSocket reads are paused |
 | `totalBytes` | when exhausted every flow gets `closed { reset: true, code: 'limit.total' }`, new `open`s get `refused limit.total` |
-| Idle | a TCP/UDP flow — 5 min (`closed { reset: true }`), a session — 10 min without messages (other than `ping`) and data (`notice idle`, close 1000) |
+| Idle | a TCP/UDP flow - 5 min (`closed { reset: true }`), a session - 10 min without messages (other than `ping`) and data (`notice idle`, close 1000) |
 | Liveness | `ping` → `pong`; a WebSocket ping every 20 s, a client that does not answer is dropped |
-| `listen` | `refused { code: 'unsupported' }`; `accept`, `wifi.scan`, `mqtt.*` without a broker — `notice { code: 'unsupported' }`, `open` to `mqtt.jumperly.internal` without a broker — `refused unsupported` |
+| `listen` | `refused { code: 'unsupported' }`; `accept`, `wifi.scan`, `mqtt.*` without a broker - `notice { code: 'unsupported' }`, `open` to `mqtt.jumperly.internal` without a broker - `refused unsupported` |
 | `resolve` | LRU cache of 1024 names, `min(ttl, 300 s)`, 5 s timeout, at most 32 concurrent queries per session; private addresses in an answer are returned as they are (`open` refuses them); an alias → `resolved { addrs: [], ttl: 300, alias: true }`; other names in the `jumperly.internal` zone → `nxdomain` |
 | Shutdown | every flow gets `closed { code: 'gateway.shutdown' }`, then `notice gateway.shutdown`, close 1001 |
 
 A frame over 64 KiB is closed with 1009 by the `ws` library (before parsing); from 16 390 bytes to
-64 KiB — 1008, as the protocol requires.
+64 KiB - 1008, as the protocol requires.
 
 ## Configuration
 
@@ -173,9 +173,9 @@ Order: defaults → the JSON file in `NETGW_CONFIG` → `NETGW_*` variables.
 | --- | --- | --- |
 | `NETGW_HOST` | `127.0.0.1` | bind address (`0.0.0.0` in a container) |
 | `NETGW_PORT` | `3002` | TCP port |
-| `NETGW_ORIGINS` | `http://localhost:5173`, `http://127.0.0.1:5173`, `http://localhost:4173`, `http://127.0.0.1:4173` | allowed `Origin`s, comma-separated; `*` — any |
+| `NETGW_ORIGINS` | `http://localhost:5173`, `http://127.0.0.1:5173`, `http://localhost:4173`, `http://127.0.0.1:4173` | allowed `Origin`s, comma-separated; `*` - any |
 | `NETGW_TCP_PORTS` | `80,443,1883,8883,8080` | TCP port allow-list |
-| `NETGW_UDP_PORTS` | empty | UDP port allow-list; empty — UDP off |
+| `NETGW_UDP_PORTS` | empty | UDP port allow-list; empty - UDP off |
 | `NETGW_MAX_CONNS` | `8` | concurrent flows per session |
 | `NETGW_CONN_PER_MIN` | `30` | opens per minute per session |
 | `NETGW_BYTES_PER_SEC` | `262144` | bytes/s per session in each direction |
@@ -186,9 +186,9 @@ Order: defaults → the JSON file in `NETGW_CONFIG` → `NETGW_*` variables.
 | `NETGW_TCP_IDLE_MS` | `300000` | flow idle time |
 | `NETGW_SESSION_IDLE_MS` | `600000` | session idle time |
 | `NETGW_DNS_SERVERS` | system | DNS servers, comma-separated |
-| `NETGW_TOKENS` | empty | `hello.token` values, comma-separated; empty — anonymous mode |
+| `NETGW_TOKENS` | empty | `hello.token` values, comma-separated; empty - anonymous mode |
 | `NETGW_TRUST_PROXY` | `0` | take the client IP from `X-Forwarded-For` (behind a reverse proxy) |
-| `NETGW_MQTT` | `1` | MQTT broker at `mqtt.jumperly.internal:1883`; `0` — off |
+| `NETGW_MQTT` | `1` | MQTT broker at `mqtt.jumperly.internal:1883`; `0` - off |
 | `NETGW_MQTT_SHARED` | `0` | sessions without `hello.ns` share the `default` broker (development only; warns in the log) |
 | `NETGW_MQTT_DEBUG_PORT` | `0` (off) | TCP port of the brokers for external MQTT tools, `127.0.0.1` only |
 | `NETGW_MQTT_IDLE_MS` | `600000` | a broker without sessions is unloaded after this time (with its retained messages) |
@@ -220,7 +220,7 @@ The JSON file (every field is optional, unknown fields fail the start):
 ```
 
 - **Aliases** are set in JSON only. A name is in the `jumperly.internal` zone (case and a trailing
-  dot in `open` do not matter). `kind: 'tcp'`: `host` may be a name (it is resolved — the
+  dot in `open` do not matter). `kind: 'tcp'`: `host` may be a name (it is resolved - the
   configuration is trusted); without `port` the port of the `open` is used. `kind: 'mqtt'` is served
   by the broker; `mqtt.jumperly.internal` is added automatically when MQTT is on.
 - **`allowCidrs`** is for tests only: it lets ranges bypass the SSRF policy; a loud warning goes to
@@ -233,7 +233,7 @@ namespace**: `hello.ns` is a random project id from the web app's `localStorage`
 
 - **The guest** opens an ordinary TCP flow to the alias `mqtt.jumperly.internal:1883`
   (`opened.remote` = `mqtt.jumperly.internal:1883`); the gateway hands it to the broker through a
-  pair of in-memory streams (`aedes.handle`) — credits, rate limits and `totalBytes` are the same as
+  pair of in-memory streams (`aedes.handle`) - credits, rate limits and `totalBytes` are the same as
   for any flow. The guest's FIN ends the MQTT connection (`eof`, `closed { reset: false }`);
   `close abort` drops it (the will is published).
 - **Without `ns`** a session gets no MQTT: no `caps: mqtt` and no `welcome.mqtt`, `open` to the
@@ -251,11 +251,11 @@ namespace**: `hello.ns` is a random project id from the web app's `localStorage`
   limit does not apply to guests.
 - **Publishing from the UI.** `mqtt.publish` → `aedes.publish` (QoS 0/1, retain). A topic with `+`,
   `#`, a NUL or starting with `$` → `notice { code: 'mqtt.topic' }`.
-- **Debug port** `NETGW_MQTT_DEBUG_PORT` (`127.0.0.1` only) — for MQTT Explorer, `mosquitto_sub` and
+- **Debug port** `NETGW_MQTT_DEBUG_PORT` (`127.0.0.1` only) - for MQTT Explorer, `mosquitto_sub` and
   the like: the CONNECT `username` is the namespace (empty means `default` with
   `NETGW_MQTT_SHARED=1`), otherwise CONNACK 4 "bad user name" and close. Example:
   `mosquitto_sub -h 127.0.0.1 -p 1884 -u <ns> -t '#' -v`. In a container the port is not reachable
-  from the host (it is bound to the container's loopback) — on purpose.
+  from the host (it is bound to the container's loopback) - on purpose.
 
 ## License
 

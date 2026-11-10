@@ -40,7 +40,7 @@ const fieldValue = (line: string) => line.slice(line.indexOf(':') + 1).trim();
 /**
  * `netsh wlan show networks mode=bssid` (Windows). The labels are translated in a localized
  * Windows, so the parser goes by structure: an `SSID n : name` block starts with the network type,
- * the authentication and the encryption; each `BSSID n` has its properties one indent deeper — the
+ * the authentication and the encryption; each `BSSID n` has its properties one indent deeper - the
  * signal ends with `%`, the channel is a bare number (deeper lines, like the BSS load, are skipped).
  */
 export function parseNetsh(text: string): WifiNetwork[] {

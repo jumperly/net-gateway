@@ -55,7 +55,7 @@ simulator uses Web Bluetooth in Chrome and Edge instead (no raw addresses or adv
 | Variable | Default | Meaning |
 |----------|---------|---------|
 | `NETGW_PORT` | `3003` | Helper port |
-| `NETGW_LAN_CIDRS` | — | LAN subnets on top of the subnets of the computer's interfaces |
+| `NETGW_LAN_CIDRS` | - | LAN subnets on top of the subnets of the computer's interfaces |
 | `NETGW_ALLOW_LOOPBACK` | `0` | Let boards reach services of the computer itself (`127.0.0.1`) |
 | `NETGW_LISTEN_HOST` | `0.0.0.0` | Where port forwards listen |
 | `NETGW_ORIGINS` | `https://app.jumperly.dev` and local dev addresses | App pages allowed to connect |

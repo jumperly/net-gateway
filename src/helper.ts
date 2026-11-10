@@ -87,12 +87,12 @@ function printBanner() {
   console.log(
     [
       '',
-      'Jumperly — local helper',
+      'Jumperly - local helper',
       `  Address:            ws://${config.host}:${config.port}${NET_PATH}`,
       `  Pairing code:       ${formatPairingCode(pairing.code)}${pairing.created ? '  (new)' : ''}`,
-      `  LAN:                ${lan.length ? lan.join(', ') : '— (no network interfaces)'}`,
+      `  LAN:                ${lan.length ? lan.join(', ') : '- (no network interfaces)'}`,
       `  Forwards listen on: ${config.helper.listenHost}`,
-      `  Bluetooth:          ${ble ? 'Windows (WinRT)' : '— (Windows only)'}`,
+      `  Bluetooth:          ${ble ? 'Windows (WinRT)' : '- (Windows only)'}`,
       '',
       'Enter the code in the simulator\'s "Network" tab. Ctrl+C stops.',
       '',
